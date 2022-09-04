@@ -1,15 +1,9 @@
 const Moralis = require("moralis-v1/node");
 const fs = require("fs");
 
-<<<<<<< HEAD
-const serverUrl = "xxx";
-
-const appId = "xxx";
-=======
 const serverUrl = 'xxx'
 
 const appId = 'xxx'
->>>>>>> 0ca655fb3b7f873688a354660baaac521364de72
 
 const contractAddress = "0xFA7E3F898c80E31A3aedeAe8b0C713a3F9666264"; // Akuma
 
