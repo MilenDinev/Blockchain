@@ -1,39 +1,71 @@
-const Moralis = require("moralis/node");
-const fs = require("fs");
+const Moralis = require('moralis/node')
+const fs = require('fs')
 
-const serverUrl = "https://9e34jzndbn3u.usemoralis.com:2053/server";
+const serverUrl = 'https://9e34jzndbn3u.usemoralis.com:2053/server'
 
-const appId = "Kh2szykWQgGsYkDitm0xl0nUvFhmLKdOtuj4d4vk";
+const appId = 'Kh2szykWQgGsYkDitm0xl0nUvFhmLKdOtuj4d4vk'
 
-const contractAddress = "0x2953399124F0cBB46d2CbACD8A89cF0599974963"; // Akuma
+const contractAddress = '0x23581767a106ae21c074b2276D25e5C3e136a68b'; // Akuma
 
-async function  getAllOwners() {
+async function getAllOwners() {
+  await Moralis.start({ serverUrl: serverUrl, appId: appId })
+  let cursor = null
+  let owners = {}
+  let res
+  let accountedTokens = []
 
-    await Moralis.start({serverUrl: serverUrl, appId: appId});
-    let cursor = null;
-    let owners = {};
-    let res;
-    let accountedTokens = [];
+  do {
+    const response = await Moralis.Web3API.token.getContractNFTTransfers({
+      address: contractAddress,
+      chain: 'eth',
+      limit: 100,
+      cursor: cursor,
+    })
 
+    res = response
+    console.log(
+      `Got page ${response.page} of ${Math.ceil(
+        response.total / response.page_size,
+      )}, ${response.total} total`,
+    )
 
+    for (const transfer of res.result) {
+      if (
+        owners[transfer.to_address] &&
+        !accountedTokens.includes(transfer.token_id)
+      ) {
+        owners[transfer.to_address] = {
+          address: transfer.to_address,
+          amount: Number(transfer.amount),
+          tokenId: [transfer.token_id],
+          prices: [Number(transfer.value)],
+          dates: [transfer.block_timestamp],
+        }
 
-     do {
-        
-            const response = await Moralis.Web3API.token.getContractNFTTransfers({
+        accountedTokens.push(transfer.token_id)
+      } else if (!accountedTokens.includes(transfer.token_id)) {
+        owners[transfer.to_address].amount++
+        owners[transfer.to_address].tokenId.push(transfer.token_id)
+        owners[transfer.to_address].prices.push(Number(transfer.value))
+        owners[transfer.to_address].dates.push(transfer.block_timestamp)
 
-                address: contractAddress,
-                chain: "eth",
-                limit: 100,
-                cursor: cursor,
-            });
+        accountedTokens.push(transfer.token_id)
+      }
+    }
 
-            res = response;
-            console.log(
-                `Got page ${response.page} of ${Math.ceil(
-                    response.total / response.page_size
-                )}, ${response.total} total`
-            )
+    cursor = res.cursor
+  } while (cursor != '' && cursor != null)
 
-        cursor = res.cursor;
-     } while (cursor !="" && cursor != null);
+  const jsonCOntentOwners = JSON.stringify(owners)
+
+  fs.writeFile('"moonbirdsOwners.json', jsonContentOwners, 'utf8', function (err) {
+    if (err) {
+      console.log('An error occured while writing JSON Object to File.')
+      return console.log(err)
+    }
+
+    console.log('JSON file has been saved.')
+  });
 }
+
+getAllOwners();
