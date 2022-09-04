@@ -1,11 +1,11 @@
-const Moralis = require('moralis/node')
+const Moralis = require("moralis-v1/node");
 const fs = require('fs')
 
 const serverUrl = 'https://9e34jzndbn3u.usemoralis.com:2053/server'
 
 const appId = 'Kh2szykWQgGsYkDitm0xl0nUvFhmLKdOtuj4d4vk'
 
-const contractAddress = '0x23581767a106ae21c074b2276D25e5C3e136a68b'; // Akuma
+const contractAddress = '0xFA7E3F898c80E31A3aedeAe8b0C713a3F9666264'; // Akuma
 
 async function getAllOwners() {
   await Moralis.start({ serverUrl: serverUrl, appId: appId })
@@ -30,8 +30,7 @@ async function getAllOwners() {
     )
 
     for (const transfer of res.result) {
-      if (
-        owners[transfer.to_address] &&
+      if (!owners[transfer.to_address] &&
         !accountedTokens.includes(transfer.token_id)
       ) {
         owners[transfer.to_address] = {
@@ -44,10 +43,10 @@ async function getAllOwners() {
 
         accountedTokens.push(transfer.token_id)
       } else if (!accountedTokens.includes(transfer.token_id)) {
-        owners[transfer.to_address].amount++
-        owners[transfer.to_address].tokenId.push(transfer.token_id)
-        owners[transfer.to_address].prices.push(Number(transfer.value))
-        owners[transfer.to_address].dates.push(transfer.block_timestamp)
+        owners[transfer.to_address].amount++;
+        owners[transfer.to_address].tokenId.push(transfer.token_id);
+        owners[transfer.to_address].prices.push(Number(transfer.value));
+        owners[transfer.to_address].dates.push(transfer.block_timestamp);
 
         accountedTokens.push(transfer.token_id)
       }
@@ -58,7 +57,7 @@ async function getAllOwners() {
 
   const jsonCOntentOwners = JSON.stringify(owners)
 
-  fs.writeFile('"moonbirdsOwners.json', jsonContentOwners, 'utf8', function (err) {
+  fs.writeFile('AkumaOwners.json', jsonContentOwners, 'utf8', function (err) {
     if (err) {
       console.log('An error occured while writing JSON Object to File.')
       return console.log(err)
