@@ -3,7 +3,7 @@ const fs = require('fs')
 
 const serverUrl = 'https://9e34jzndbn3u.usemoralis.com:2053/server'
 
-const appId = 'Kh2szykWQgGsYkDitm0xl0nUvFhmLKdOtuj4d4vk'
+const appId = 'xxx'
 
 const contractAddress = '0xFA7E3F898c80E31A3aedeAe8b0C713a3F9666264'; // Akuma
 
