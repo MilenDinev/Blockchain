@@ -1,7 +1,7 @@
 const Moralis = require("moralis-v1/node");
 const fs = require('fs')
 
-const serverUrl = 'https://9e34jzndbn3u.usemoralis.com:2053/server'
+const serverUrl = 'xxx'
 
 const appId = 'xxx'
 
