@@ -10,9 +10,15 @@ import goblin from "./images/goblin.png";
 import impostors from "./images/impostors.png";
 import mfers from "./images/mfers.png";
 import punks from "./images/punks.png";
+import akuma from "./images/akuma.png";
 import clone from "clone";
 
 export const allCollections =[
+    {
+        name: "Akuma",
+        img: akuma,
+        slug: "0xFA7E3F898c80E31A3aedeAe8b0C713a3F9666264"
+    },
     {
         name: "Moonbirds",
         img: moonbirds,
